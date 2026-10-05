@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Consommables hydromel</string>
+    <string name="title_activity_main">Consommables hydromel</string>
+    <string name="package_name">mg.hydromel.consommables</string>
+    <string name="custom_url_scheme">mg.hydromel.consommables</string>
+</resources>

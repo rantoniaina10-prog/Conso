@@ -1,0 +1,12 @@
+Consommables hydromel - projet APK Android
+
+1. Créez un compte gratuit sur github.com, puis un nouveau dépôt (New repository).
+2. Dans le dépôt, choisissez "uploading an existing file" et glissez TOUT le contenu de ce dossier
+   (y compris le dossier caché .github, les dossiers android et www, et les fichiers package.json,
+   package-lock.json, capacitor.config.json).
+3. Cliquez sur "Commit changes".
+4. Ouvrez l'onglet "Actions". La construction démarre seule (environ 5 à 8 minutes).
+   Si rien ne démarre : Actions > "Construire l'APK" > Run workflow.
+5. Quand la ligne devient verte, ouvrez-la et téléchargez "consommables-hydromel-apk" en bas de la page (fichier .zip).
+6. Dézippez, copiez app-debug.apk sur le téléphone et installez-le
+   (autorisez l'installation depuis des sources inconnues si Android le demande).

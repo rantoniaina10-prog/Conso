@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Consommables hydromel</title>
+<style>
+:root{--bg:#f3f5f0;--card:#fff;--ink:#1d2a22;--mute:#5f6f64;--line:#d9dfd6;--accent:#b7791f;--accent-ink:#fff;--ok:#2f6b46;--low:#b3261e;--lowbg:#fbe9e7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15201a;--card:#1e2c24;--ink:#e8efe6;--mute:#9bab9f;--line:#33463a;--accent:#e0a63a;--accent-ink:#1a1405;--ok:#7fc79a;--low:#ff8a80;--lowbg:#3a2220}}
+:root[data-theme="dark"]{--bg:#15201a;--card:#1e2c24;--ink:#e8efe6;--mute:#9bab9f;--line:#33463a;--accent:#e0a63a;--accent-ink:#1a1405;--ok:#7fc79a;--low:#ff8a80;--lowbg:#3a2220}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Georgia,"Times New Roman",serif;max-width:640px;margin-inline:auto}
+header{padding:20px 16px 8px}
+h1{font-size:26px;margin:0;font-weight:700;letter-spacing:-.2px}
+.sub{color:var(--mute);font-size:14px;margin-top:2px;font-family:system-ui,sans-serif}
+nav{display:flex;gap:6px;padding:8px 16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:2;font-family:system-ui,sans-serif}
+nav button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font-size:15px}
+nav button[aria-selected=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{padding:8px 16px 40px;font-family:system-ui,sans-serif}
+h2{font:700 15px Georgia,serif;margin:18px 0 6px;color:var(--mute)}
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:6px;color:var(--ink);font-size:16px}
+.row .n{flex:1}
+.row .q{font-weight:700;font-variant-numeric:tabular-nums}
+.row .u{color:var(--mute);font-size:13px;margin-left:3px;font-weight:400}
+.row.low{border-color:var(--low);background:var(--lowbg)}
+.row.low .q{color:var(--low)}
+.tag{font-size:12px;color:var(--low);display:block}
+.alert{background:var(--lowbg);color:var(--low);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:14px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;z-index:5}
+.sheet.open{display:flex}
+.panel{background:var(--card);width:100%;max-width:640px;margin:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));font-family:system-ui,sans-serif;max-height:90%;overflow:auto}
+.panel h3{margin:0 0 2px;font:700 20px Georgia,serif}
+label{display:block;font-size:14px;color:var(--mute);margin:12px 0 4px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+.btns{display:flex;gap:8px;margin-top:14px}
+.btns button{flex:1;padding:13px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:600}
+.btns .in{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btns .out{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;font-size:14px;padding:10px 0}
+.h{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:14px}
+.h b{font-variant-numeric:tabular-nums}
+.h small{display:block;color:var(--mute)}
+.empty{color:var(--mute);padding:20px 0;text-align:center}
+</style>
+</head>
+<body>
+<header><h1>Consommables hydromel</h1><div class="sub" id="sub"></div></header>
+<nav role="tablist"><button role="tab" data-t="stock" aria-selected="true">Stock</button><button role="tab" data-t="hist" aria-selected="false">Historique</button><button role="tab" data-t="add" aria-selected="false">Ajouter</button></nav>
+<main id="main"></main>
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+<script>
+const SEED=[
+["capsules polyfloral","pièce","Conditionnement"],["capsules vanille","pièce","Conditionnement"],["capsules letchi","pièce","Conditionnement"],
+["bouchons","pièce","Conditionnement"],["bouteilles propres","pièce","Conditionnement"],
+["étiquettes polyfloral","pièce","Conditionnement"],["étiquettes vanille","pièce","Conditionnement"],["étiquettes letchi","pièce","Conditionnement"],
+["Miel polyfloral","litre","Miel"],["Miel letchi","litre","Miel"],
+["Levures","pièce","Additifs"],["Meta K","gramme","Additifs"],["Sorbate K","gramme","Additifs"],["Acide citrique","gramme","Additifs"],["Bentonite","gramme","Additifs"]];
+const CATS=["Miel","Additifs","Conditionnement"];
+let S={items:SEED.map((s,i)=>({id:"i"+i,name:s[0],unit:s[1],cat:s[2],qty:0,min:0})),log:[]};
+try{const r=localStorage.getItem("hydromel-conso");if(r){const p=JSON.parse(r);if(p&&p.items)S=p}}catch(e){}
+function save(){try{localStorage.setItem("hydromel-conso",JSON.stringify(S))}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=n=>Number(n).toLocaleString("fr-FR",{maximumFractionDigits:2});
+const unitLabel=(u,q)=>u==="pièce"&&q>1?"pièces":u==="litre"&&q>1?"litres":u==="gramme"&&q>1?"grammes":u;
+let tab="stock";
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));render()});
+const isLow=i=>i.min>0&&i.qty<=i.min;
+function render(){
+const low=S.items.filter(isLow);
+$("#sub").textContent=S.items.length+" articles"+(low.length?" · "+low.length+" à racheter":"");
+const m=$("#main");
+if(tab==="stock"){
+let h="";
+if(low.length)h+=`<div class="alert">À racheter : ${low.map(i=>esc(i.name)).join(", ")}</div>`;
+const cats=[...new Set([...CATS,...S.items.map(i=>i.cat)])];
+cats.forEach(c=>{const l=S.items.filter(i=>i.cat===c);if(!l.length)return;
+h+=`<h2>${esc(c)}</h2>`+l.map(i=>`<button class="row${isLow(i)?" low":""}" data-id="${i.id}"><span class="n">${esc(i.name)}${isLow(i)?'<span class="tag">Stock bas</span>':""}</span><span class="q">${fmt(i.qty)}<span class="u">${unitLabel(i.unit,i.qty)}</span></span></button>`).join("")});
+m.innerHTML=h;
+m.querySelectorAll(".row").forEach(b=>b.onclick=()=>openItem(b.dataset.id));
+}else if(tab==="hist"){
+m.innerHTML=S.log.length?S.log.slice(0,100).map(l=>`<div class="h"><b>${l.d>0?"+":"−"}${fmt(Math.abs(l.d))} ${esc(l.u)}</b> · ${esc(l.n)}<small>${new Date(l.t).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})}${l.note?" · "+esc(l.note):""}</small></div>`).join(""):`<div class="empty">Aucun mouvement. Ouvrez un article dans Stock pour enregistrer un achat ou une utilisation.</div>`;
+}else{
+m.innerHTML=`<label for="an">Nom de l'article</label><input id="an" placeholder="ex. Nutriment levure">
+<label for="au">Unité</label><select id="au"><option>pièce</option><option>gramme</option><option>litre</option><option>kg</option></select>
+<label for="ac">Catégorie</label><select id="ac">${CATS.map(c=>`<option>${c}</option>`).join("")}</select>
+<div class="btns"><button class="out" id="adb">Ajouter l'article</button></div>`;
+$("#adb").onclick=()=>{const n=$("#an").value.trim();if(!n){$("#an").focus();return}
+S.items.push({id:"i"+Date.now(),name:n,unit:$("#au").value,cat:$("#ac").value,qty:0,min:0});save();tab="stock";document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x.dataset.t==="stock"));render()};
+}}
+function openItem(id){
+const i=S.items.find(x=>x.id===id);
+$("#panel").innerHTML=`<h3>${esc(i.name)}</h3><div class="sub">En stock : ${fmt(i.qty)} ${unitLabel(i.unit,i.qty)}</div>
+<label for="qv">Quantité (${esc(i.unit)})</label><input id="qv" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
+<label for="qn">Note ou cuvée (facultatif)</label><input id="qn" placeholder="ex. Cuvée 12, achat marché">
+<div class="btns"><button class="out" id="bo">Utilisé</button><button class="in" id="bi">Acheté</button></div>
+<label for="qm">Seuil d'alerte (${esc(i.unit)})</label><input id="qm" type="number" inputmode="decimal" min="0" step="any" value="${i.min||""}" placeholder="0 = pas d'alerte">
+<div class="btns"><button id="bs">Enregistrer le seuil</button><button id="bc">Fermer</button></div>
+<button class="link" id="bd">Supprimer cet article</button>`;
+$("#sheet").classList.add("open");
+const mv=s=>{const v=parseFloat($("#qv").value);if(!(v>0)){$("#qv").focus();return}
+const d=s*v;i.qty=Math.max(0,Math.round((i.qty+d)*100)/100);S.log.unshift({t:Date.now(),n:i.name,u:i.unit,d,note:$("#qn").value.trim()});save();close();render()};
+$("#bo").onclick=()=>mv(-1);$("#bi").onclick=()=>mv(1);
+$("#bs").onclick=()=>{i.min=Math.max(0,parseFloat($("#qm").value)||0);save();close();render()};
+$("#bc").onclick=close;
+$("#bd").onclick=()=>{if(confirm("Supprimer "+i.name+" ?")){S.items=S.items.filter(x=>x.id!==id);save();close();render()}};
+}
+function close(){$("#sheet").classList.remove("open")}
+$("#sheet").onclick=e=>{if(e.target.id==="sheet")close()};
+render();
+</script>
+</body>
+</html>
